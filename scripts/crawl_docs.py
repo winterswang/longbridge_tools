@@ -1,6 +1,7 @@
 import requests
 import re
 import os
+import time
 from pathlib import Path
 
 # Base URL for raw markdown files
@@ -195,7 +196,11 @@ def main():
     parsed_docs = []
     
     print("Fetching documentation...")
-    for path in TARGET_DOCS:
+    for i, path in enumerate(TARGET_DOCS):
+        # Be polite to GitHub
+        if i > 0:
+            time.sleep(0.5)
+            
         print(f"Processing {path}...")
         content = fetch_markdown(path)
         if content:

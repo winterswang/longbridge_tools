@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 from pathlib import Path
 from datetime import datetime
 
@@ -21,7 +22,14 @@ def main():
         print(f"Fetching historical candlesticks for: {', '.join(symbols)}")
         print("-" * 50)
         
-        for symbol in symbols:
+        for i, symbol in enumerate(symbols):
+            # Rate limit handling
+            # Quote API Limit: 10 req/s.
+            # While SDK QuoteContext handles rate limiting internally, adding explicit 
+            # sleep ensures we don't overwhelm the local buffer or network.
+            if i > 0:
+                time.sleep(0.2)
+
             print(f"\nFetching data for {symbol}...")
             
             # Fetch daily candlesticks, last 10 days
