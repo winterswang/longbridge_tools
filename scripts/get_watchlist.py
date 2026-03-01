@@ -1,3 +1,11 @@
+import sys
+import os
+from pathlib import Path
+
+# Add src directory to sys.path to allow importing longbridge_tools without installation
+project_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_root / "src"))
+
 from longbridge_tools import QuoteSkill
 
 def main():
