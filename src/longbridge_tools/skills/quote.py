@@ -65,9 +65,25 @@ def get_watchlist() -> List[Dict]:
         return []
 
     try:
-        # 假设 _quote_skill 有 get_watchlist 方法
-        # 如果没有，我们需要在 QuoteSkill 中实现
-        return _quote_skill.get_watchlist()
+        # 获取所有分组
+        groups = _quote_skill.get_watchlist()
+        
+        watchlist = []
+        # Longport SDK 的 WatchlistGroup 对象结构可能不同
+        # 假设 groups 是 WatchlistGroup 列表，包含 id, name, securities 等字段
+        # 实际上 SDK 文档显示 get_watchlist 返回的是 [WatchlistGroup, ...]
+        
+        for group in groups:
+            # 假设 group.securities 是 Security 列表
+            securities = getattr(group, "securities", [])
+            for security in securities:
+                watchlist.append({
+                    "symbol": security.symbol,
+                    "market": str(security.market),
+                    "name": getattr(security, "name", ""),
+                    "group_name": group.name
+                })
+        return watchlist
     except Exception as e:
         print(f"Failed to get watchlist: {e}")
         return []
